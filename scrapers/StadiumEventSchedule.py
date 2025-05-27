@@ -40,6 +40,8 @@ def get_events(days=1) -> list[StadiumEvent]:
         list: A list of SuncorpEvent objects that occur between today and the specified number of days ahead.
     """
     events = chain(_get_suncorp_events(), _get_gabba_events())
+    # Use combine to get today's midnight (today's date and time from datetime.min)
+    start_date = datetime.combine(datetime.today(), datetime.min.time()).date()
     filtered_events = [event for event in events if
-                       datetime.now().date() <= event.date.date() <= (datetime.now().date() + timedelta(days=days))]
+                       start_date <= event.date.date() <= (start_date + timedelta(days=days-1))]
     return sorted(filtered_events, key=lambda event: event.date)
