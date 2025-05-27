@@ -8,7 +8,7 @@ from commands import Uptime, Repository
 import datetime
 
 from commands.SuncorpEventsCommand import SuncorpEventsCommand
-from scrapers.StadiumEventSchedule import get_suncorp_events
+from config import GENERAL_CHANNEL_ID
 
 load_dotenv()
 token = os.environ.get('TOKEN')
@@ -23,7 +23,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    channel_id = 1167760258215714817  # Replace it with your channel ID
+    channel_id = GENERAL_CHANNEL_ID
     channel = bot.get_channel(channel_id)
     morning_update.start()
 
@@ -33,7 +33,7 @@ async def on_ready():
 
 @tasks.loop(time=datetime.time(hour=9, minute=0, tzinfo=datetime.timezone(datetime.timedelta(hours=10))))
 async def morning_update():
-    channel_id = 1167760258215714817  # Replace with your channel ID
+    channel_id = GENERAL_CHANNEL_ID
     channel = bot.get_channel(channel_id)
 
     if channel is None:
