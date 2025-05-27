@@ -7,7 +7,7 @@ from discord.ext import commands, tasks
 from commands import Uptime, Repository
 import datetime
 
-from commands.SuncorpEventsCommand import SuncorpEventsCommand
+from commands.StadiumEventsCommand import SuncorpEventsCommand
 from config import GENERAL_CHANNEL_ID
 
 load_dotenv()
