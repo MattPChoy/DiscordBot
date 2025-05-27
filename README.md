@@ -20,8 +20,8 @@ Run main.py 🎉🎉🎉.
 
 # Commands
 
-| Command        | Invocation          | Description                                                   |
-|----------------|---------------------|---------------------------------------------------------------|
-| Uptime         | !uptime             | Gets how long the current bot session has been active for     |
-| Repository     | !repository         | Sends the link to the Git repository for the bot's sourcecode |
-| Suncorp Events | !suncorp-events (3) | Sends a list of upcoming events at Suncorp Stadium for the next 3 (or how many provided) days |                                                              
+| Command        | Invocation          | Description                                                                                        |
+|----------------|---------------------|----------------------------------------------------------------------------------------------------|
+| Uptime         | !uptime             | Gets how long the current bot session has been active for                                          |
+| Repository     | !repository         | Sends the link to the Git repository for the bot's sourcecode                                      |
+| Events | !events (3) | Sends a list of upcoming events at Suncorp or the Gabba for the next 3 (or how many provided) days |                                                              

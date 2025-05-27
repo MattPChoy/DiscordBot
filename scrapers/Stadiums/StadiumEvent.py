@@ -1,26 +1,27 @@
 from datetime import datetime
 
 
-class SuncorpEvent:
+class StadiumEvent:
     category: str
     date: datetime
     series: str
     startTime: datetime
     title: str
     url: str
+    location: str # At this point, either Suncorp or Gabba
 
     @staticmethod
-    def fromJson(data: dict) -> 'SuncorpEvent':
+    def fromJson(data: dict) -> 'StadiumEvent':
         """
-        Creates a SuncorpEvent instance from a dictionary.
+        Creates a StadiumEvent instance from a dictionary.
 
         Args:
             data: Dictionary containing event data
 
         Returns:
-            SuncorpEvent: A new instance of SuncorpEvent
+            StadiumEvent: A new instance of StadiumEvent
         """
-        new = SuncorpEvent()
+        new = StadiumEvent()
 
         new.category = data['eventCategory']['title']
         new.date = datetime.strptime(data['eventDate'], '%b %d, %Y, %I:%M:%S\u202f%p')

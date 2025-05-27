@@ -8,7 +8,7 @@ from commands import Uptime, Repository
 import datetime
 
 from commands.SuncorpEventsCommand import SuncorpEventsCommand
-from scrapers.SuncorpGameSchedule import get_suncorp_events
+from scrapers.StadiumEventSchedule import get_suncorp_events
 
 load_dotenv()
 token = os.environ.get('TOKEN')
