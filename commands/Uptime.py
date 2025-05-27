@@ -3,7 +3,7 @@ import datetime
 
 class Uptime(commands.Cog):
     def __init__(self):
-        self.start_time = datetime.datetime.utcnow()
+        self.start_time = datetime.datetime.now(datetime.timezone.utc)
 
     @commands.command()
     async def uptime(self, ctx):
