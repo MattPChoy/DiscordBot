@@ -1,12 +1,11 @@
+import datetime
 import os
+
 import discord
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from discord.ext import commands, tasks
-
 from commands import Uptime, Repository
-import datetime
-
 from commands.StadiumEventsCommand import SuncorpEventsCommand
 from config import GENERAL_CHANNEL_ID
 
@@ -21,15 +20,13 @@ intents.guilds = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
 @bot.event
 async def on_ready():
     channel_id = GENERAL_CHANNEL_ID
     channel = bot.get_channel(channel_id)
     morning_update.start()
 
-    # if channel:
-    #     with open('./assets/anya.gif', 'rb') as f:
-    #         await channel.send(file=discord.File(f, 'anya.gif'))
 
 @tasks.loop(time=datetime.time(hour=9, minute=0, tzinfo=datetime.timezone(datetime.timedelta(hours=10))))
 async def morning_update():

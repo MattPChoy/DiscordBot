@@ -29,7 +29,7 @@ def _get_gabba_events() -> list[StadiumEvent]:
     return _scrape_events(GABBA_URL, "Gabba")
 
 
-def get_suncorp_events(days=1) -> list[StadiumEvent]:
+def get_events(days=1) -> list[StadiumEvent]:
     """
     Retrieves Stadiums events occurring within a specified number of days from today.
 
@@ -40,4 +40,6 @@ def get_suncorp_events(days=1) -> list[StadiumEvent]:
         list: A list of SuncorpEvent objects that occur between today and the specified number of days ahead.
     """
     events = chain(_get_suncorp_events(), _get_gabba_events())
-    return [event for event in events if datetime.now().date() <= event.date.date() <= (datetime.now().date() + timedelta(days=days))]
+    filtered_events = [event for event in events if
+                       datetime.now().date() <= event.date.date() <= (datetime.now().date() + timedelta(days=days))]
+    return sorted(filtered_events, key=lambda event: event.date)

@@ -1,11 +1,11 @@
 from discord.ext import commands
-from scrapers.StadiumEventSchedule import get_suncorp_events
+from scrapers.StadiumEventSchedule import get_events
 
 
 class SuncorpEventsCommand(commands.Cog):
     @commands.hybrid_command(name="events")
     async def __stadium_events__(self, ctx, n_days=3):
-        events=get_suncorp_events(n_days)
+        events=get_events(n_days)
         await self.send_stadium_events(ctx, events, n_days)
 
 
@@ -18,7 +18,6 @@ class SuncorpEventsCommand(commands.Cog):
         message += f"{suncorp_icon}: Suncorp, {gabba_icon}: Gabba\n\n"
 
         for event in events:
-            print(event.date)
             event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
             event_date = f"📅 {event.date.strftime('%a %d %b')}"
             event_time = ""
@@ -31,7 +30,7 @@ class SuncorpEventsCommand(commands.Cog):
 
     @staticmethod
     async def daily_message(channel):
-        events = get_suncorp_events(1)
+        events = get_events(1)
 
         if len(events) == 0:
             return
