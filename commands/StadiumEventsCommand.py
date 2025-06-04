@@ -23,13 +23,13 @@ class SuncorpEventsCommand(commands.Cog):
             for event in events:
                 event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
                 if event.startTime:
-                    epoc_time = str(int(datetime.combine(event.date.date(), event.startTime.time()).timestamp()))
+                    epoch_time = str(int(datetime.combine(event.date.date(), event.startTime.time()).timestamp()))
                 else:
-                    epoc_time = str(int(event.date.timestamp()))
+                    epoch_time = str(int(event.date.timestamp()))
                     
-                event_date = f"📅 <t:{epoc_time}:D>"
-                event_time = f"<t:{epoc_time}:t>" if event.startTime else ""
-                remaining = f"(<t:{epoc_time}:R>)"
+                event_date = f"📅 <t:{epoch_time}:D>"
+                event_time = f"⏰ <t:{epoch_time}:t>" if event.startTime else ""
+                remaining = f"(<t:{epoch_time}:R>)"
                 message += f"{event_symbol} {event.title} {event_date} {event_time} {remaining}\n"
             return message
         
