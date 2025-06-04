@@ -19,16 +19,18 @@ class SuncorpEventsCommand(commands.Cog):
             message = f"# Stadium events in the next {n_days} days:\n" if n_days != 1 else "# Stadiums events today:\n"
             message += f"{suncorp_icon}: Suncorp, {gabba_icon}: Gabba\n\n"
 
+            
             for event in events:
                 event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
-                epoch_time = str(int(event.date.timestamp()))
-                event_date = f"📅 <t:{epoch_time}:D>"
-                event_time = ""
-
                 if event.startTime:
-                    print(event.startTime)
-                    event_time = f"⏰ <t:{epoch_time}:t> (<t:{epoch_time}:R>)"
-                message += f"{event_symbol} {event.title} {event_date} {event_time}\n"
+                    epoc_time = str(int(datetime.combine(event.date.date(), event.startTime.time()).timestamp()))
+                else:
+                    epoc_time = str(int(event.date.timestamp()))
+                    
+                event_date = f"📅 <t:{epoc_time}:D>"
+                event_time = f"<t:{epoc_time}:t>" if event.startTime else ""
+                remaining = f"(<t:{epoc_time}:R>)"
+                message += f"{event_symbol} {event.title} {event_date} {event_time} {remaining}\n"
             return message
         
         message = get_message(events, n_days)
