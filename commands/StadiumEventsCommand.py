@@ -1,6 +1,6 @@
 from discord.ext import commands
 from scrapers.StadiumEventSchedule import get_events
-
+from datetime import datetime
 
 class SuncorpEventsCommand(commands.Cog):
     @commands.hybrid_command(name="events")
@@ -11,21 +11,29 @@ class SuncorpEventsCommand(commands.Cog):
 
     @staticmethod
     async def send_stadium_events(ctx, events, n_days=3):
-        suncorp_icon = ":sun_with_face:"
-        gabba_icon = "🐑"
+        
+        def get_message(events, n_days):
+            suncorp_icon = ":sun_with_face:"
+            gabba_icon = "🐑"
 
-        message = f"# Stadium events in the next {n_days} days:\n" if n_days != 1 else "# Stadiums events today:\n"
-        message += f"{suncorp_icon}: Suncorp, {gabba_icon}: Gabba\n\n"
+            message = f"# Stadium events in the next {n_days} days:\n" if n_days != 1 else "# Stadiums events today:\n"
+            message += f"{suncorp_icon}: Suncorp, {gabba_icon}: Gabba\n\n"
 
-        for event in events:
-            event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
-            event_date = f"📅 {event.date.strftime('%a %d %b')}"
-            event_time = ""
-
-            if event.startTime:
-                event_time = f"⏰ {event.startTime.strftime('%I:%M %p')}"
-            message += f"{event_symbol} {event.title} {event_date} {event_time}\n"
-
+            
+            for event in events:
+                event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
+                if event.startTime:
+                    epoch_time = str(int(datetime.combine(event.date.date(), event.startTime.time()).timestamp()))
+                else:
+                    epoch_time = str(int(event.date.timestamp()))
+                    
+                event_date = f"📅 <t:{epoch_time}:D>"
+                event_time = f"⏰ <t:{epoch_time}:t>" if event.startTime else ""
+                remaining = f"(<t:{epoch_time}:R>)"
+                message += f"{event_symbol} {event.title} {event_date} {event_time} {remaining}\n"
+            return message
+        
+        message = get_message(events, n_days)
         await ctx.send(message)
 
     @staticmethod
