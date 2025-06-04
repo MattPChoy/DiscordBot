@@ -21,12 +21,12 @@ class SuncorpEventsCommand(commands.Cog):
 
             for event in events:
                 event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
-                epoc_time = event.date.strftime('%s')
-                event_date = f"📅 <t:{epoc_time}:D>"
+                epoch_time = event.date.strftime('%s')
+                event_date = f"📅 <t:{epoch_time}:D>"
                 event_time = ""
 
                 if event.startTime:
-                    event_time = f"<t:{epoc_time}:t> (<t:{epoc_time}:R>)"
+                    event_time = f"<t:{epoch_time}:t> (<t:{epoch_time}:R>)"
                 message += f"{event_symbol} {event.title} {event_date} {event_time}\n"
             return message
         
