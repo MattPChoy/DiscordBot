@@ -26,6 +26,7 @@ class SuncorpEventsCommand(commands.Cog):
                 event_time = ""
 
                 if event.startTime:
+                    print(event.startTime)
                     event_time = f"⏰ <t:{epoch_time}:t> (<t:{epoch_time}:R>)"
                 message += f"{event_symbol} {event.title} {event_date} {event_time}\n"
             return message
