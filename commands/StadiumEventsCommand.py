@@ -1,6 +1,6 @@
 from discord.ext import commands
 from scrapers.StadiumEventSchedule import get_events
-
+from datetime import datetime
 
 class SuncorpEventsCommand(commands.Cog):
     @commands.hybrid_command(name="events")
