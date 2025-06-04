@@ -21,7 +21,7 @@ class SuncorpEventsCommand(commands.Cog):
 
             for event in events:
                 event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
-                epoch_time = event.date.strftime('%s')
+                epoch_time = str(int(event.date.timestamp()))
                 event_date = f"📅 <t:{epoch_time}:D>"
                 event_time = ""
 
