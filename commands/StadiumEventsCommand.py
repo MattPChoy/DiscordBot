@@ -3,6 +3,8 @@ from scrapers.StadiumEventSchedule import get_events
 import datetime
 
 class SuncorpEventsCommand(commands.Cog):
+    TRUNCATED_MESSAGE = "Truncated as message too long ..."
+
     @commands.hybrid_command(name="events")
     async def __stadium_events__(self, ctx, n_days:str="3", venue=""):
 
@@ -11,7 +13,7 @@ class SuncorpEventsCommand(commands.Cog):
         except ValueError:
             await ctx.reply(f"\"{n_days}\" is not a valid number of days.")
             return
-        
+
         MAX_DAYS = (datetime.date.max - datetime.date.today()).days
 
         if days > MAX_DAYS:
@@ -34,16 +36,25 @@ class SuncorpEventsCommand(commands.Cog):
         message += f"{suncorp_icon}: Suncorp, {gabba_icon}: Gabba\n\n"
 
         for event in events:
-            if venue.lower() in ["suncorp", "gabba"]:
+            if len(venue) != 0 and venue.lower() in ["suncorp", "gabba"]:
                 if event.location.lower() != venue.lower():
                     continue
             event_symbol = suncorp_icon if event.location == 'Suncorp' else gabba_icon
-            event_date = f"📅 {event.date.strftime('%a %d %b')}"
-            event_time = ""
-
             if event.startTime:
-                event_time = f"⏰ {event.startTime.strftime('%I:%M %p')}"
-            message += f"{event_symbol} {event.title} {event_date} {event_time}\n"
+                epoch_time = str(int(datetime.datetime.combine(event.date.date(), event.startTime.time()).timestamp()))
+            else:
+                epoch_time = str(int(event.date.timestamp()))
+
+            event_date = f"📅 <t:{epoch_time}:D>"
+            event_time = f"⏰ <t:{epoch_time}:t>" if event.startTime else ""
+            remaining = f"(<t:{epoch_time}:R>)"
+            
+            new_message = f"{event_symbol} {event.title} {event_date} {event_time} {remaining}\n"
+            if (len(message) + len(new_message) + len(SuncorpEventsCommand.TRUNCATED_MESSAGE)) < 2000:
+                message += new_message
+            else:
+                message += SuncorpEventsCommand.TRUNCATED_MESSAGE
+                break
 
         await ctx.send(message)
 
