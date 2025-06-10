@@ -58,7 +58,8 @@ class SuncorpEventsCommand(commands.Cog):
 
         await ctx.send(message)
 
-    async def daily_message(self, channel):
+    @staticmethod
+    async def daily_message(channel):
         events = get_events(1)
 
         if len(events) == 0:
