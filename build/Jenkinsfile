@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'discord-bot'
+        CONTAINER_NAME = 'discord-bot-container'
+        GIT_REPO = 'https://github.com/MattPChoy/DiscordBot.git'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git url: "${env.GIT_REPO}"
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${IMAGE_NAME}:latest ."
+                }
+            }
+        }
+
+        stage('Stop Existing Container') {
+            steps {
+                script {
+                    // Stop and remove the container if it's running
+                    sh """
+                    if [ \$(docker ps -q -f name=${CONTAINER_NAME}) ]; then
+                        docker stop ${CONTAINER_NAME}
+                    fi
+                    if [ \$(docker ps -aq -f name=${CONTAINER_NAME}) ]; then
+                        docker rm ${CONTAINER_NAME}
+                    fi
+                    """
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Modify ports/volumes/env vars as needed
+                    sh "docker run -d --name ${CONTAINER_NAME} ${IMAGE_NAME}:latest"
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo '❌ Build or deployment failed.'
+        }
+        success {
+            echo '✅ Build and deployment successful.'
+        }
+    }
+}
