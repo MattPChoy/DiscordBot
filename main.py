@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 
 from commands import Uptime, Repository
 from commands.StadiumEventsCommand import SuncorpEventsCommand
-from config import GENERAL_CHANNEL_ID
+from commands.VCLeaderboard import VCLeaderboard
+from commands.VCStats import VCStats
+from config import GENERAL_CHANNEL_ID, dbConnectionString, LOGS_CHANNEL_ID
+from data.VoiceChatRepository import VoiceSessionRepository
 
 load_dotenv()
 token = os.environ.get('TOKEN')
@@ -17,9 +20,11 @@ intents.message_content = True
 intents.reactions = True
 intents.members = True
 intents.guilds = True
+intents.voice_states = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+voiceRepo = VoiceSessionRepository(dbConnectionString)
 
 @bot.event
 async def on_ready():
@@ -27,6 +32,21 @@ async def on_ready():
     channel = bot.get_channel(channel_id)
     morning_update.start()
 
+@bot.event
+async def on_voice_state_update(member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
+    log_channel = bot.get_channel(LOGS_CHANNEL_ID)
+
+    if before.channel is not None:
+        voiceRepo.end_session(member, before.channel.name)
+        await log_channel.send(
+            f"{member.name} left {before.channel.name}"
+        )
+
+    if after.channel is not None:
+        voiceRepo.start_session(member, after.channel.name)
+        await log_channel.send(
+            f"{member.name} joined {after.channel.name}"
+        )
 
 @tasks.loop(time=datetime.time(hour=9, minute=0, tzinfo=datetime.timezone(datetime.timedelta(hours=10))))
 async def morning_update():
@@ -38,7 +58,6 @@ async def morning_update():
         return
 
     await SuncorpEventsCommand.daily_message(channel)
-
 
 PIN_EMOJI = "📌"
 PIN_THRESHOLD = 2
@@ -105,6 +124,8 @@ async def setup_bot():
     await bot.add_cog(Uptime())
     await bot.add_cog(Repository())
     await bot.add_cog(SuncorpEventsCommand())
+    await bot.add_cog(VCStats())
+    await bot.add_cog(VCLeaderboard())
 
 
 import asyncio

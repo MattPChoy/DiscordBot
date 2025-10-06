@@ -1,0 +1,40 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: discord-bot
+    restart: always
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@database:5431/discordbot
+  adminer:
+    image: adminer
+    container_name: discordbot_adminer
+    restart: always
+    ports:
+      - '15431:8080'
+  database:
+    image: postgres
+    container_name: discordbot_db
+    ports:
+      - '5431:5432'
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: discordbot
+    volumes:
+      - "./appdata/postgres-data-new:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "my_db", "-U" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "synchronous_commit=off"
