@@ -35,6 +35,12 @@ async def on_ready():
 @bot.event
 async def on_voice_state_update(member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
     log_channel = bot.get_channel(LOGS_CHANNEL_ID)
+    prev_channel = None if before.channel == None else before.channel.name
+    after_channel = None if after.channel == None else after.channel.name
+    if prev_channel == after_channel:
+        # At this point we don't care if the channel didn't change
+        # This could be e.g. deafen, mute, server mute
+        return
 
     if before.channel is not None:
         voiceRepo.end_session(member, before.channel.name)

@@ -11,18 +11,27 @@ class VCLeaderboard(commands.Cog):
         self.voiceRepo = VoiceSessionRepository(dbConnectionString)
 
     @commands.command(name="vc-leaderboard", brief="Get stats about users' time in vc")
-    async def get_vc_leaderboard(self, ctx, n_days: str = "7"):
+    async def get_vc_leaderboard(self, ctx, n_days: str = "7", top_n: str = "5"):
         try:
             days_int = int(n_days)
         except ValueError:
             await ctx.reply(f"\"{n_days}\" is not a valid number of days.")
             return
 
-        if not (0 <= days_int <= 100):
+        if not (1 <= days_int <= 100):
             await ctx.send(f"{n_days} is not a valid number between 1 and 100")
             return
 
-        n = 5
+        try:
+            n = int(top_n)
+        except ValueError:
+            await ctx.reply(f"{top_n} is not a valid number")
+            return
+
+        if not (1 <= n <= 20):
+            await ctx.send(f"{top_n} must be between 1 and 20")
+            return
+
         stats = self.voiceRepo.get_top_vc_chatters(n, days_int)
 
         embed = Embed(
